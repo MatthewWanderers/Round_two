@@ -40,37 +40,48 @@
 # methods named above.
 
 class TowersOfHanoi
-  attr_accessor :towers
+  attr_accessor :towers, :count
 
   def initialize
-    @towers = [[3,2,1],[],[]]
+    @towers = [[3, 2, 1], [], []]
+    @count = 0
   end
 
   def play
     until won?
+      print "Welcome to Towers of Hanoi!"
       render
-      puts "Please enter a from tower. Remember to use zero indexing"
-      from_tower = gets.chomp.to_i
-      puts "Please enter a to tower. Remember to use zero indexing"
-      to_tower = gets.chomp.to_i
-
-      while !valid_move?(from_tower, to_tower)
+      from_tower, to_tower = -1,-1
+      while true
+        puts "Please enter a from tower. Remember to use zero indexing."
+        from_tower = gets.chomp.to_i
+        puts "Please enter a to tower."
+        to_tower = gets.chomp.to_i
+        break if valid_move?(from_tower, to_tower)
         puts "Please enter a valid move"
-        current_move = gets.chomp
       end
 
-      move(current_move)
+      self.count += 1
+      move(from_tower, to_tower)
     end
-    puts "You won!"
   end
 
   def render
+    puts "These are your towers:"
     print towers
+    puts ""
   end
 
   def won?
     return true if towers[1].length == 3 || towers[2].length == 3
     false
+  end
+
+  def win_message
+    puts "You won! in #{count} moves!"
+    puts "Play again? (Y/n)"
+    response = gets.chomp
+    TowersOfHanoi.new.play if response.downcase[0] == "y"
   end
 
   def valid_move?(from_tower, to_tower)
@@ -83,4 +94,9 @@ class TowersOfHanoi
   def move(from_tower, to_tower)
     towers[to_tower] << towers[from_tower].pop
   end
+end
+
+if $PROGRAM_NAME == __FILE__
+  towers_of_hanoi = TowersOfHanoi.new
+  towers_of_hanoi.play
 end
